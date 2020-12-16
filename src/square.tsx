@@ -1,7 +1,9 @@
-import React from 'react';
+import React from 'react'
 
-const Square: React.FC = () => (
-  <button className="square"></button>
-)
+const Square: React.VFC<{value: 'O' | 'X' | null, onClick: () => void}> = ({value, onClick}) => {
+  return (
+    <button className="square" onClick={onClick}>{value}</button>
+  );
+}
 
 export default Square
