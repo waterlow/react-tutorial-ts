@@ -8,7 +8,8 @@ type Squares = (null | 'X' | 'O')[]
 const useHistory = () => {
   const [history, setHistory] = useState([{ squares: Array(9).fill(null) as Squares}  ])
   const [xIsNext, setXIsNext] = useState(true)
-  const current = history[history.length - 1];
+  const [stepNumber, setStepNumber] = useState(0)
+  const current = history[stepNumber];
   const status = useMemo(() => {
     const winner = calculateWinner(current.squares)
     return winner ? `Winner: ${winner}` : `Next player: ${xIsNext ? 'X' : 'O'}`
@@ -19,9 +20,11 @@ const useHistory = () => {
       const squares = current.squares.slice()
       if (calculateWinner(squares) || squares[i]) return
 
+      const newHistory = history.slice(0, stepNumber + 1)
       const newSquares = [...squares]
       newSquares[i] = xIsNext ? 'X' : 'O'
-      setHistory(history.concat([{
+      setStepNumber(newHistory.length)
+      setHistory(newHistory.concat([{
         squares: newSquares,
       }]))
       setXIsNext(!xIsNext)
@@ -29,15 +32,15 @@ const useHistory = () => {
   }
 
   const jumpTo = (step: number) => {
-    setHistory(history.slice(0, step + 1))
+    setStepNumber(step)
     setXIsNext((step % 2) === 0)
   }
 
-  return [status, history, handleClick, jumpTo] as const
+  return [status, history, current, handleClick, jumpTo] as const
 }
 
 const App: React.VFC =  () => {
-  const [status, history, handleClick, jumpTo] = useHistory();
+  const [status, history, current, handleClick, jumpTo] = useHistory();
   const moves = history.map((_step, move) => {
     const desc = move ? `Go to move #${move}` : 'Go to game start';
     return (
@@ -50,7 +53,7 @@ const App: React.VFC =  () => {
   return (
     <div className="game">
       <div className="game-board">
-        <Board squares={history[history.length - 1].squares} onClick={(i: number) => handleClick(i)} />
+        <Board squares={current.squares} onClick={(i: number) => handleClick(i)} />
       </div>
       <div className="game-info">
         <div>{status}</div>
