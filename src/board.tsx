@@ -1,34 +1,25 @@
 import React from 'react'
 import Square from './square'
-
-type Squares = (null | 'X' | 'O')[]
+import { calculateWinner } from './calculate_winner'
 
 type Props = {
-  squares: Squares;
-  onClick: (i: number) => (() => void);
+  squares: (string | null)[]
+  onClick: (i: number) => (() => void)
 }
 
 const Board : React.VFC<Props> = ({squares, onClick}) => {
+  const winPattern = calculateWinner(squares)
+
   const renderSquare = (i: number) =>
-    <Square value={squares[i]} onClick={onClick(i)} />
+    <Square key={i} value={squares[i]} onClick={onClick(i)} highlight={!!winPattern && winPattern.indexOf(i) !== -1} />
 
   return (
     <div>
-      <div className="board-row">
-        {renderSquare(0)}
-        {renderSquare(1)}
-        {renderSquare(2)}
-      </div>
-      <div className="board-row">
-        {renderSquare(3)}
-        {renderSquare(4)}
-        {renderSquare(5)}
-      </div>
-      <div className="board-row">
-        {renderSquare(6)}
-        {renderSquare(7)}
-        {renderSquare(8)}
-      </div>
+      {[0, 1, 2].map(i =>
+        <div className="board-row" key={i}>
+          {[0, 1, 2].map(j => renderSquare(i * 3 + j))}
+        </div>
+      )}
     </div>
   )
 }

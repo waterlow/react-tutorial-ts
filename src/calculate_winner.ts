@@ -13,5 +13,5 @@ export const calculateWinner = (squares: any[]) => {
   const pattern = WIN_PATTERNS.find(([a, b, c]) =>
     squares[a] && squares[a] === squares[b] && squares[a] === squares[c]
   )
-  return pattern && squares[pattern[0]]
+  return pattern
 }

@@ -1,8 +1,14 @@
 import React from 'react'
 
-const Square: React.VFC<{value: 'O' | 'X' | null, onClick: () => void}> = ({value, onClick}) => {
+type Props = {
+  value: string | null
+  onClick: () => void
+  highlight?: boolean
+}
+
+const Square: React.VFC<Props> = ({value, onClick, highlight}) => {
   return (
-    <button className="square" onClick={onClick}>{value}</button>
+    <button className="square" onClick={onClick} style={highlight ? { color: 'red' } : undefined}>{value}</button>
   );
 }
 
